@@ -6,7 +6,7 @@ import pygame
 pygame.init()
 
 # game window
-
+# some new things
 screen = pygame.display.set_mode((720,720))
 
 
