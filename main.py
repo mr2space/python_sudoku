@@ -7,7 +7,7 @@ pygame.init()
 
 # game window
 
-screen = pygame.display.set_mode((900,720))
+screen = pygame.display.set_mode((720,720))
 
 
 # title and Logo
