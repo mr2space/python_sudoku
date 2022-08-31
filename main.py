@@ -23,8 +23,6 @@ icon = pygame.image.load(r"Include\resources\restaurant.png")
 pygame.display.set_icon(icon)
 
 
-def 
-
 
 def quitGame():
     for event in pygame.event.get():
