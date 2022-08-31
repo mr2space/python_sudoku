@@ -1,5 +1,12 @@
 
 import pygame
+import requests
+
+# getting sudoku game info from api
+response = requests.get("https://sugoku.herokuapp.com/board?difficulty=easy")
+grid = response.json()['board']
+grid_original = []
+grid_original.extend(grid) 
 
 # Intialize the pygame
 
@@ -15,6 +22,8 @@ pygame.display.set_caption("Sudoku Awesome Game")
 icon = pygame.image.load(r"Include\resources\restaurant.png")
 pygame.display.set_icon(icon)
 
+
+def 
 
 
 def quitGame():
