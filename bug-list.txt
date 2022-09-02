@@ -1,0 +1,14 @@
+close button - hang
+some lag due to nested loops
+
+
+//  need to optimize the code 
+
+
+role (jobs) ------------------------->
+
+checking - rishu / priya 
+
+seprate - restart level - neha
+
+input method + score - prince
