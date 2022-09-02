@@ -10,8 +10,8 @@ grid_original = [[grid[x][y] for y in range(9)] for x in range(9)]
 print(grid_original)
 
 #global varibles
-grid_background = (14, 24, 95)
-grid_color = (255,255,255)
+grid_background = (1, 147, 124)
+grid_color = (250, 241, 230)
 filled_text = (0,0,255)
 user_text = (0,255,0)
 
@@ -38,17 +38,13 @@ def quitGame():
             return False
     return True
 
-
-
 def sudokuGrid():
     for i in range(0,10):
-        width = 1
+        width = 2
         if i % 3 == 0:
-            width = 2
-        pygame.draw.line(screen, (225, 255, 238),
-                         (40 + 70*i, 40), (40 + 70*i, 670), width)
-        pygame.draw.line(screen, (225, 255, 238),
-                         (40, 40 + 70*i), (670, 40 + 70*i), width)
+            width = 3
+        pygame.draw.line(screen, grid_color,(40 + 70*i, 40), (40 + 70*i, 670), width)
+        pygame.draw.line(screen, grid_color,(40, 40 + 70*i), (670, 40 + 70*i), width)
         width = 1
 
 
@@ -57,14 +53,14 @@ def displayGameNumber():
         for j in range(9):
             number = grid[j][i]
             if 0 < number < 10:
-                value = font.render(str(number),True,(255,0,0))
+                value = font.render(str(number),True,user_text)
                 if grid_original[j][i] != 0:
-                    value = font.render(str(number), True, (0, 0, 0))
+                    value = font.render(str(number), True, filled_text)
                 screen.blit(value, (70*j+70, 70*i+60))
-   
+
 def temp_displayIndex():
     for event in pygame.event.get():
-        if event.type == pygame.MOUSEBUTTONUP and event.button ==1:
+        if event.type == pygame.MOUSEBUTTONUP and event.button == 1:
             pos = pygame.mouse.get_pos()
             i, j = pos[0], pos[1]
             i,j = (i-40)//70, (j-40)//70
@@ -92,7 +88,7 @@ def insertion(i,j):
 running = True
 while running:
     running = quitGame()
-    screen.fill((22, 33, 62))
+    screen.fill(grid_background)
     sudokuGrid()
     displayGameNumber()
     temp_displayIndex()
