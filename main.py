@@ -56,10 +56,17 @@ def displayGameNumber():
     for i in range(9):
         for j in range(9):
             number = grid[j][i]
-            if 0 < number < 10:
-                value = font.render(str(number),True,user_text)
-                if grid_original[j][i] != 0:
-                    value = font.render(str(number), True, filled_text)
+            if not(0 < number < 10):
+                return False
+            value = font.render(str(number), True, user_text)
+            if grid_original[j][i] != 0:
+                pygame.draw.rect(
+                    screen, filled_box_color, (40+70*j+padding, 40+70*i+padding, 70-padding, 70-padding))
+                value = font.render(str(number), True, filled_text)
+                screen.blit(value, (70*j+70, 70*i+60))
+            else:
+                pygame.draw.rect(screen, user_box_color, (40+70 *
+                                                            j+padding, 40+70*i+padding, 70-padding, 70-padding))
                 screen.blit(value, (70*j+70, 70*i+60))
 
 
