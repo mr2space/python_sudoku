@@ -9,11 +9,15 @@ grid_original = []
 grid_original = [[grid[x][y] for y in range(9)] for x in range(9)] 
 print(grid_original)
 
-#global varibles
+#User Interface varibles
 grid_background = (1, 147, 124)
-grid_color = (250, 241, 230)
-filled_text = (0,0,255)
-user_text = (0,255,0)
+grid_color = (0, 0, 0)
+filled_text = (0, 0, 0)
+filled_box_color = (234, 229, 9)
+user_text = (255, 255, 255)
+user_box_color = (19, 99, 223)
+padding = 3
+
 
 
 
@@ -58,29 +62,34 @@ def displayGameNumber():
                     value = font.render(str(number), True, filled_text)
                 screen.blit(value, (70*j+70, 70*i+60))
 
+
+# get the mouse position when left click and wait and insert the value in box
 def temp_displayIndex():
     for event in pygame.event.get():
-        if event.type == pygame.MOUSEBUTTONUP and event.button == 1:
-            pos = pygame.mouse.get_pos()
-            i, j = pos[0], pos[1]
-            i,j = (i-40)//70, (j-40)//70
-            print("its in input error")
-            return insertion(i,j)
+        if event.type == pygame.MOUSEBUTTONUP and event.button == 1: #check if left click happen
+            return insertion()
+    return False
 
-def insertion(i,j):
+
+def insertion():
     while True:
         for event in pygame.event.get():
+            pos = pygame.mouse.get_pos()  #get the position of mouse
+            i, j = pos[0], pos[1]
+            i, j = (i-40)//70, (j-40)//70  #convert it to list index based on position
+            pygame.draw.rect(screen, user_box_color, (40+70 *
+                             i+padding, 40+70*j+padding, 70-padding, 70-padding))
             if event.type == pygame.QUIT:
-                pygame.QUIT
+                return pygame.QUIT
             if event.type == pygame.KEYDOWN:
-                print(grid[i][j],"grid value")
+                print(grid[i][j], "grid value")
                 if grid_original[i][j] != 0:
                     return None
-                if event.key == 8:grid[i][j] = 0
-                if event.key >= 48:
-                    print("in if 2",event.key-48,event.key)
-                    grid[i][j] = event.key - 48 
-                    print("hello",grid)
+                if event.key == 8:
+                    grid[i][j] = 0
+                    return None
+                if event.key >= 4 and event.key <= 57:
+                    grid[i][j] = event.key - 48
                     return True
 
 
