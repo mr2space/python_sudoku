@@ -1,4 +1,3 @@
-
 import pygame
 import requests
 
@@ -6,10 +5,10 @@ import requests
 response = requests.get("https://sugoku.herokuapp.com/board?difficulty=easy")
 grid = response.json()['board']
 grid_original = []
-grid_original = [[grid[x][y] for y in range(9)] for x in range(9)] 
+grid_original = [[grid[x][y] for y in range(9)] for x in range(9)]
 print(grid_original)
 
-#User Interface varibles
+#User interface varibles
 grid_background = (1, 147, 124)
 grid_color = (0, 0, 0)
 filled_text = (0, 0, 0)
@@ -18,14 +17,11 @@ user_text = (255, 255, 255)
 user_box_color = (19, 99, 223)
 padding = 3
 
-
-
-
 # Intialize the pygame
 pygame.init()
 
 # game window
-screen = pygame.display.set_mode((720,720))
+screen = pygame.display.set_mode((720, 720))
 
 
 # title and Logo
@@ -34,7 +30,8 @@ icon = pygame.image.load(r"resources\restaurant.png")
 pygame.display.set_icon(icon)
 
 # font and color
-font = pygame.font.SysFont('Agency FB',30)
+font = pygame.font.SysFont('Agency FB', 30)
+
 
 def quitGame():
     for event in pygame.event.get():
@@ -42,13 +39,16 @@ def quitGame():
             return False
     return True
 
+
 def sudokuGrid():
-    for i in range(0,10):
+    for i in range(0, 10):
         width = 2
         if i % 3 == 0:
             width = 3
-        pygame.draw.line(screen, grid_color,(40 + 70*i, 40), (40 + 70*i, 670), width)
-        pygame.draw.line(screen, grid_color,(40, 40 + 70*i), (670, 40 + 70*i), width)
+        pygame.draw.line(screen, grid_color, (40 + 70*i, 40),
+                         (40 + 70*i, 670), width)
+        pygame.draw.line(screen, grid_color, (40, 40 + 70*i),
+                         (670, 40 + 70*i), width)
         width = 1
 
 
@@ -56,24 +56,22 @@ def displayGameNumber():
     for i in range(9):
         for j in range(9):
             number = grid[j][i]
-            if not(0 < number < 10):
-                return False
-            value = font.render(str(number), True, user_text)
-            if grid_original[j][i] != 0:
-                pygame.draw.rect(
-                    screen, filled_box_color, (40+70*j+padding, 40+70*i+padding, 70-padding, 70-padding))
-                value = font.render(str(number), True, filled_text)
-                screen.blit(value, (70*j+70, 70*i+60))
-            else:
-                pygame.draw.rect(screen, user_box_color, (40+70 *
-                                                            j+padding, 40+70*i+padding, 70-padding, 70-padding))
-                screen.blit(value, (70*j+70, 70*i+60))
+            if 0 < number < 10:
+                value = font.render(str(number), True, user_text)
+                if grid_original[j][i] != 0:
+                    pygame.draw.rect(
+                        screen, filled_box_color, (40+70*j+padding, 40+70*i+padding, 70-padding, 70-padding))
+                    value = font.render(str(number), True, filled_text)
+                    screen.blit(value, (70*j+70, 70*i+60))
+                else:
+                    pygame.draw.rect(screen, user_box_color, (40+70 *
+                                                              j+padding, 40+70*i+padding, 70-padding, 70-padding))
+                    screen.blit(value, (70*j+70, 70*i+60))
 
 
-# get the mouse position when left click and wait and insert the value in box
 def temp_displayIndex():
     for event in pygame.event.get():
-        if event.type == pygame.MOUSEBUTTONUP and event.button == 1: #check if left click happen
+        if event.type == pygame.MOUSEBUTTONUP and event.button == 1:
             return insertion()
     return False
 
@@ -81,9 +79,9 @@ def temp_displayIndex():
 def insertion():
     while True:
         for event in pygame.event.get():
-            pos = pygame.mouse.get_pos()  #get the position of mouse
+            pos = pygame.mouse.get_pos()
             i, j = pos[0], pos[1]
-            i, j = (i-40)//70, (j-40)//70  #convert it to list index based on position
+            i, j = (i-40)//70, (j-40)//70
             pygame.draw.rect(screen, user_box_color, (40+70 *
                              i+padding, 40+70*j+padding, 70-padding, 70-padding))
             if event.type == pygame.QUIT:
@@ -100,12 +98,11 @@ def insertion():
                     return True
 
 
-
 running = True
 while running:
     running = quitGame()
     screen.fill(grid_background)
-    sudokuGrid()
     displayGameNumber()
     temp_displayIndex()
+    sudokuGrid()
     pygame.display.update()
