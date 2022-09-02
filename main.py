@@ -31,10 +31,10 @@ pygame.display.set_icon(icon)
 # font and color
 font = pygame.font.SysFont('Agency FB', 30)
 
-
 def quitGame():
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
+            running = False
             return False
     return True
 
@@ -68,23 +68,27 @@ def displayGameNumber():
                     screen.blit(value, (70*j+70, 70*i+60))
 
 
-def temp_displayIndex():
-    for event in pygame.event.get():
-        if event.type == pygame.MOUSEBUTTONUP and event.button == 1:
-            return insertion()
+def temp_displayIndex(event):
+    if event.type == pygame.QUIT:
+        running = False
+    if event.type == pygame.MOUSEBUTTONUP and event.button == 1:
+        insertion()
+        displayGameNumber()
+        pygame.display.update()
     return False
 
 
 def insertion():
     while True:
         for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+                return pygame.QUIT
             pos = pygame.mouse.get_pos()
             i, j = pos[0], pos[1]
             i, j = (i-40)//70, (j-40)//70
             pygame.draw.rect(screen, user_box_color, (40+70 *
                              i+padding, 40+70*j+padding, 70-padding, 70-padding))
-            if event.type == pygame.QUIT:
-                return pygame.QUIT
             if event.type == pygame.KEYDOWN:
                 print(grid[i][j], "grid value")
                 if grid_original[i][j] != 0:
@@ -94,14 +98,19 @@ def insertion():
                     return None
                 if event.key >= 4 and event.key <= 57:
                     grid[i][j] = event.key - 48
+                    print(grid)
                     return True
 
 
+global running 
 running = True
+screen.fill(grid_background)
+displayGameNumber()
 while running:
-    running = quitGame()
-    screen.fill(grid_background)
-    displayGameNumber()
-    temp_displayIndex()
-    sudokuGrid()
-    pygame.display.update()
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
+        print('its here')
+        temp_displayIndex(event)
+        sudokuGrid()
+        pygame.display.update()
