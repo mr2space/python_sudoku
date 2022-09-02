@@ -2,14 +2,13 @@ import pygame
 import requests
 
 # getting sudoku game info from api
-response = requests.get("https://sugoku.herokuapp.com/board?difficulty=easy")
+response = requests.get("https://sugoku.herokuapp.com/board?difficulty=hard")
 grid = response.json()['board']
 grid_original = []
 grid_original = [[grid[x][y] for y in range(9)] for x in range(9)]
-print(grid_original)
 
 #User interface varibles
-grid_background = (1, 147, 124)
+grid_background = (0, 200, 151)
 grid_color = (0, 0, 0)
 filled_text = (0, 0, 0)
 filled_box_color = (234, 229, 9)
