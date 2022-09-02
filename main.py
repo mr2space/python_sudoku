@@ -19,7 +19,7 @@ screen = pygame.display.set_mode((720,720))
 
 # title and Logo
 pygame.display.set_caption("Sudoku Awesome Game")
-icon = pygame.image.load(r"Include\resources\restaurant.png")
+icon = pygame.image.load(r"resources\restaurant.png")
 pygame.display.set_icon(icon)
 
 # font and color
