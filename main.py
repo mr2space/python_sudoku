@@ -101,6 +101,9 @@ def insertion():
                     print(grid)
                     return True
 
+def checking(i,j):
+    pass
+
 
 global running 
 running = True
