@@ -79,7 +79,6 @@ class Board:
                                                                   j+self.padding, 40+70*i+self.padding, 70-self.padding, 70-self.padding))
                         screen.blit(value, (70*j+70, 70*i+60))
                     if (j, i) in self.mistake_pos:
-                        print("checked for error", i, j)
                         pygame.draw.rect(
                             screen, (255, 0, 0), (40+70*j+self.padding, 40+70*i+self.padding, 70-self.padding, 70-self.padding))
                         value = font.render(
@@ -111,13 +110,11 @@ class Board:
                         return [self.checking((i, j), num), (i, j)]
 
     def checking(self, position, num):
-        print("in checking ")
-        print(self.mistake_pos)
         if position in self.mistake_pos:
             try:
                 self.mistake_pos.remove(position)
             except:
-                print("hello world")
+                pass
         #check row
         for i in range(len(grid[0])):
             if (grid[position[0]][i] == num) and i != position[1]:
