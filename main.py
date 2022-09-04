@@ -1,11 +1,11 @@
+from operator import pos
+from pickle import FALSE
 import pygame
 import requests
 
 
 class StartWindow:
-    filled_box_color = (234, 229, 9)
     def __init__(self, screen, grid_background):
-        print("In init")
         self.screen = screen
         self.width = 720
         self.height = 720
@@ -13,9 +13,8 @@ class StartWindow:
         self.font = pygame.font.SysFont('Agency FB', 50)
 
     def display(self):
-        print("In display")
         self.rect = pygame.Rect((0, 0), (self.width, self.height))
-        self.text_surf = self.font.render("sudoku", True, self.filled_box_color)
+        self.text_surf = self.font.render("sudoku", True, filled_box_color)
         self.text_center = self.text_surf.get_rect(center=self.rect.center)
         pygame.draw.rect(screen, self.window_color, self.rect)
         self.screen.blit(
@@ -52,7 +51,6 @@ class Board:
     mistake_pos = []
 
     def sudokuGrid(self):
-        print("in grid: 6")
         for i in range(0, 10):
             self.width = 2
             if i % 3 == 0:
@@ -64,7 +62,6 @@ class Board:
             width = 1
 
     def displayGameNumber(self, user_box_color=user_box_color):
-        print("in display game: 5")
         for i in range(9):
             for j in range(9):
                 number = grid[j][i]
@@ -76,19 +73,19 @@ class Board:
                         value = font.render(
                             str(number), True, self.filled_text)
                         screen.blit(value, (70*j+70, 70*i+60))
-                    elif (i, j) in self.mistake_pos:
+                    else:
+                        pygame.draw.rect(screen, user_box_color, (40+70 *
+                                                                  j+self.padding, 40+70*i+self.padding, 70-self.padding, 70-self.padding))
+                        screen.blit(value, (70*j+70, 70*i+60))
+                    if (j, i) in self.mistake_pos:
+                        print("checked for error", i, j)
                         pygame.draw.rect(
                             screen, (255, 0, 0), (40+70*j+self.padding, 40+70*i+self.padding, 70-self.padding, 70-self.padding))
                         value = font.render(
                             str(number), True, self.filled_text)
                         screen.blit(value, (70*j+70, 70*i+60))
-                    else:
-                        pygame.draw.rect(screen, user_box_color, (40+70 *
-                                                                  j+self.padding, 40+70*i+self.padding, 70-self.padding, 70-self.padding))
-                        screen.blit(value, (70*j+70, 70*i+60))
 
     def insertion(self):
-        print("in insertion: 3")
         while True:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -111,16 +108,17 @@ class Board:
                         return [self.checking((i, j), num), (i, j)]
 
     def checking(self, position, num):
-        print("in checking: 4")
+        print("in checking ")
+        print(self.mistake_pos)
         #check row
         for i in range(len(grid[0])):
             if (grid[position[0]][i] == num) and i != position[1]:
-                self.mistake_pos.append((position))
+                self.mistake_pos.append(position)
                 return False
         #check col
         for i in range(len(grid[0])):
             if (grid[i][position[1]] == num) and i != position[0]:
-                self.mistake_pos.append((position))
+                self.mistake_pos.append(position)
                 return False
 
         #check sub-grid
@@ -129,14 +127,14 @@ class Board:
         for i in range(0, 3):
             for j in range(0, 3):
                 if (grid[x+i][y+i] == num) and (x+i) != position[0] and (y+i) != position[1]:
-                    self.mistake_pos.append((position))
+                    self.mistake_pos.append(position)
                     return False
-        if position in self.mistake_pos:
-            self.mistake_pos.remove(position)
+        # if position in self.mistake_pos:
+        #     print(position,self.mistake_pos)
+        #     self.mistake_pos.remove(position)
         return True
 
     def temp_displayIndex(self, event):
-        print("In temp dispay: 2", event)
         if event.type == pygame.QUIT:
             running = False
         if event.type == pygame.MOUSEBUTTONUP and event.button == 1:
@@ -191,7 +189,6 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
-        print("in loop")
         play.temp_displayIndex(event)
         play.sudokuGrid()
         # start.display()
