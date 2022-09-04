@@ -1,5 +1,4 @@
 from operator import pos
-from pickle import FALSE
 import pygame
 import requests
 
@@ -49,17 +48,19 @@ class Board:
     padding = 3
     #mistake variable
     mistake_pos = []
-
+    mistake_count = 0
+    
+    #score Count
+    score = 0
     def sudokuGrid(self):
         for i in range(0, 10):
             self.width = 2
             if i % 3 == 0:
-                width = 3
+                self.width = 3
             pygame.draw.line(screen, self.grid_color, (40 + 70*i, 40),
                              (40 + 70*i, 670), self.width)
             pygame.draw.line(screen, self.grid_color, (40, 40 + 70*i),
                              (670, 40 + 70*i), self.width)
-            width = 1
 
     def displayGameNumber(self, user_box_color=user_box_color):
         for i in range(9):
@@ -93,6 +94,8 @@ class Board:
                     return pygame.QUIT
                 pos = pygame.mouse.get_pos()
                 i, j = pos[0], pos[1]
+                if i >= 680:
+                    return True
                 i, j = (i-40)//70, (j-40)//70
                 pygame.draw.rect(screen, self.user_box_color, (40+70 *
                                                                i+self.padding, 40+70*j+self.padding, 70-self.padding, 70-self.padding))
@@ -110,15 +113,22 @@ class Board:
     def checking(self, position, num):
         print("in checking ")
         print(self.mistake_pos)
+        if position in self.mistake_pos:
+            try:
+                self.mistake_pos.remove(position)
+            except:
+                print("hello world")
         #check row
         for i in range(len(grid[0])):
             if (grid[position[0]][i] == num) and i != position[1]:
                 self.mistake_pos.append(position)
+                self.mistake_count += 1
                 return False
         #check col
         for i in range(len(grid[0])):
             if (grid[i][position[1]] == num) and i != position[0]:
                 self.mistake_pos.append(position)
+                self.mistake_count += 1
                 return False
 
         #check sub-grid
@@ -128,10 +138,9 @@ class Board:
             for j in range(0, 3):
                 if (grid[x+i][y+i] == num) and (x+i) != position[0] and (y+i) != position[1]:
                     self.mistake_pos.append(position)
+                    self.mistake_count += 1
                     return False
-        # if position in self.mistake_pos:
-        #     print(position,self.mistake_pos)
-        #     self.mistake_pos.remove(position)
+        self.score += 10
         return True
 
     def temp_displayIndex(self, event):
@@ -142,6 +151,33 @@ class Board:
             self.displayGameNumber()
             pygame.display.update()
         return False
+    def displayScore(self):
+        text = font.render("SCORE",True,(255,255,255))
+        rect = pygame.Rect((780, 250), (200, 200))
+        pygame.draw.rect(screen, self.grid_background, rect)
+        value = font.render(f"{self.score}", True, (255, 255, 255))
+        screen.blit(text,(755,200))
+        screen.blit(value,(780,250))
+        self.displayMistake()
+        self.button()
+        
+    def displayMistake(self):
+        text = font.render("MISTAKE",True,(255,255,255))
+        rect = pygame.Rect((780, 350), (200, 200))
+        pygame.draw.rect(screen,self.grid_background,rect)
+        value = font.render(f"{self.mistake_count}", True, (255, 255, 255))
+        screen.blit(text,(755,300))
+        screen.blit(value,(780,350))
+        
+    def button(self):
+        self.btn = pygame.Rect(
+            (735, 500), (110, 50))
+        pygame.draw.rect(screen, (234, 229, 9), self.btn, border_radius=15)
+        font = pygame.font.SysFont('Agency FB', 25)
+        text_surf = font.render("Restart", True, (0, 0, 0))
+        text_center = text_surf.get_rect(center=self.btn.center)
+        screen.blit(text_surf, (text_center[0], text_center[1]-2))
+
 
 
 def quitGame():
@@ -164,7 +200,7 @@ pygame.init()
 clock = pygame.time.Clock()
 # game window
 global screen
-screen = pygame.display.set_mode((720, 720))
+screen = pygame.display.set_mode((920, 720))
 
 
 # title and Logo
@@ -190,7 +226,9 @@ while running:
         if event.type == pygame.QUIT:
             running = False
         play.temp_displayIndex(event)
+        play.displayScore()
         play.sudokuGrid()
         # start.display()
         pygame.display.update()
         clock.tick(60)
+
