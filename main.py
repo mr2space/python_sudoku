@@ -1,5 +1,3 @@
-from operator import pos
-from pickle import FALSE
 import pygame
 import requests
 
