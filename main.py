@@ -5,6 +5,7 @@ import requests
 
 
 class StartWindow:
+    filled_box_color = (234, 229, 9)
     def __init__(self, screen, grid_background):
         print("In init")
         self.screen = screen
@@ -16,7 +17,7 @@ class StartWindow:
     def display(self):
         print("In display")
         self.rect = pygame.Rect((0, 0), (self.width, self.height))
-        self.text_surf = self.font.render("sudoku", True, filled_box_color)
+        self.text_surf = self.font.render("sudoku", True, self.filled_box_color)
         self.text_center = self.text_surf.get_rect(center=self.rect.center)
         pygame.draw.rect(screen, self.window_color, self.rect)
         self.screen.blit(
