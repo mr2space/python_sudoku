@@ -6,8 +6,6 @@ import requests
 class StartWindow:
     def __init__(self, screen):
         self.screen = screen
-        self.width = 720
-        self.height = 720
         self.window_color = (101, 33, 255)
         self.widow_size = (920, 720)
         self.background_color = (101, 33, 255)
@@ -15,37 +13,48 @@ class StartWindow:
         screen.fill(self.background_color)
         logo = pygame.image.load("logo.png")
         loadingFont = pygame.font.SysFont('Agency FB', 20)
-        loading = loadingFont.render("hello", True, (255, 255, 255))
-        screen.blit(logo, (200, 200))
-        screen.blit(loading, (245, 350))
+        screen.blit(logo, (400, 200))
+        self.display()
         pygame.display.update()
 
     def display(self):
-        self.rect = pygame.Rect((0, 0), (self.width, self.height))
-        self.text_surf = self.font.render("sudoku", True, (255,255,255))
-        self.text_center = self.text_surf.get_rect(center=self.rect.center)
-        pygame.draw.rect(screen, self.window_color, self.rect)
-        self.screen.blit(
-            self.text_surf, (self.text_center[0]-10, self.text_center[1]-20))
         self.startStatus = True
+        pygame.display.update()
         while self.startStatus:
-            self.button()
-            self.clickEvent()
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    exit()
+                self.button((415, 400), "EASY", self.clickEvent)
+                self.button((415, 475),"MEDIUM",self.clickEvent)
+                self.button((415, 550), "HARD", self.clickEvent)
+                
+            pygame.display.update()
         return 0
 
-    def button(self):
+    def button(self, position, text, event, btn_color=(234, 229, 9)):
+        call = event
         self.btn = pygame.Rect(
-            (self.text_center[0]-10, self.text_center[1]+100), (110, 50))
-        pygame.draw.rect(screen, (234, 229, 9), self.btn, border_radius=15)
-        font = pygame.font.SysFont('Agency FB', 25)
-        text_surf = font.render("start", True, (0, 0, 0))
+            position, (110, 40))
+        pygame.draw.rect(screen, btn_color, self.btn, border_radius=10)
+        font = pygame.font.SysFont('Agency FB', 23)
+        text_surf = font.render(text, True,  "#000000")
         text_center = text_surf.get_rect(center=self.btn.center)
-        self.screen.blit(text_surf, (text_center[0], text_center[1]-2))
+        screen.blit(text_surf, (text_center[0], text_center[1]-2))
+        self.clickEvent(self.btn,text)
 
-    def clickEvent(self):
+    def clickEvent(self,btn,text):
+        print("in click")
         mouse_pos = pygame.mouse.get_pos()
-        pass
-
+        if btn.collidepoint(mouse_pos):
+            if pygame.mouse.get_pressed()[0]:
+                loading = WindowLayer()
+                return self.buttonAction(text)
+    def buttonAction(self,text):
+        text = text.lower()
+        response = requests.get(
+            f"https://sugoku.herokuapp.com/board?difficulty={text}")
+        self.startStatus = False
+        
 
 class Board:
     def __init__(self):
@@ -197,6 +206,7 @@ class Board:
     def buttonAction(self):
         self.__init__()
         NewGame = WindowLayer()
+        NewGame.loadNewGame()
         return True
 
 
@@ -211,7 +221,6 @@ class WindowLayer:
         screen.blit(logo, (400, 200))
         screen.blit(loading,(445,350))
         pygame.display.update()
-        self.loadNewGame()
     
     def loadNewGame(self):
         global grid
@@ -236,6 +245,7 @@ def quitGame():
 
 
 # getting sudoku game info from api4
+global response
 response = requests.get("https://sugoku.herokuapp.com/board?difficulty=hard")
 global grid
 grid = response.json()['board']
@@ -249,7 +259,8 @@ clock = pygame.time.Clock()
 # game window
 global screen
 screen = pygame.display.set_mode((920, 720))
-
+global running
+running = True
 
 # title and Logo
 pygame.display.set_caption("Sudoku Awesome Game")
@@ -263,8 +274,7 @@ start = StartWindow(screen)
 play = Board()
 
 
-global running
-running = True
+
 screen.fill(play.grid_background)
 play.displayGameNumber()
 while running:
