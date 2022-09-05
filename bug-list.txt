@@ -1,14 +1,8 @@
 close button - hang
-some lag due to nested loops
-
-
-//  need to optimize the code 
-
-
+lag in button loading
 role (jobs) ------------------------->
 
 checking - rishu / priya 
 
-seprate - restart level - neha
 
 input method + score - prince

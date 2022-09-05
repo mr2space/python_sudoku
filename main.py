@@ -4,23 +4,33 @@ import requests
 
 
 class StartWindow:
-    def __init__(self, screen, grid_background):
+    def __init__(self, screen):
         self.screen = screen
         self.width = 720
         self.height = 720
-        self.window_color = grid_background
+        self.window_color = (101, 33, 255)
+        self.widow_size = (920, 720)
+        self.background_color = (101, 33, 255)
         self.font = pygame.font.SysFont('Agency FB', 50)
+        screen.fill(self.background_color)
+        logo = pygame.image.load("logo.png")
+        loadingFont = pygame.font.SysFont('Agency FB', 20)
+        loading = loadingFont.render("hello", True, (255, 255, 255))
+        screen.blit(logo, (200, 200))
+        screen.blit(loading, (245, 350))
+        pygame.display.update()
 
     def display(self):
         self.rect = pygame.Rect((0, 0), (self.width, self.height))
-        self.text_surf = self.font.render("sudoku", True, filled_box_color)
+        self.text_surf = self.font.render("sudoku", True, (255,255,255))
         self.text_center = self.text_surf.get_rect(center=self.rect.center)
         pygame.draw.rect(screen, self.window_color, self.rect)
         self.screen.blit(
             self.text_surf, (self.text_center[0]-10, self.text_center[1]-20))
-
-        self.button()
-        self.clickEvent()
+        self.startStatus = True
+        while self.startStatus:
+            self.button()
+            self.clickEvent()
         return 0
 
     def button(self):
@@ -38,20 +48,18 @@ class StartWindow:
 
 
 class Board:
-    #User interface varibles
-    grid_background = (0, 200, 151)
-    grid_color = (0, 0, 0)
-    filled_text = (0, 0, 0)
-    filled_box_color = (234, 229, 9)
-    user_text = (255, 255, 255)
-    user_box_color = (19, 99, 223)
-    padding = 3
-    #mistake variable
-    mistake_pos = []
-    mistake_count = 0
-    
-    #score Count
-    score = 0
+    def __init__(self):
+        self.grid_background = (0, 200, 151)
+        self.grid_color = (0, 0, 0)
+        self.filled_text = (0, 0, 0)
+        self.filled_box_color = (234, 229, 9)
+        self.user_text = (255, 255, 255)
+        self.user_box_color = (19, 99, 223)
+        self.padding = 3
+        self.mistake_pos = []
+        self.mistake_count = 0
+        self.score = 0
+
     def sudokuGrid(self):
         for i in range(0, 10):
             self.width = 2
@@ -61,8 +69,9 @@ class Board:
                              (40 + 70*i, 670), self.width)
             pygame.draw.line(screen, self.grid_color, (40, 40 + 70*i),
                              (670, 40 + 70*i), self.width)
-
-    def displayGameNumber(self, user_box_color=user_box_color):
+            
+    def displayGameNumber(self):
+        user_box_color = self.user_box_color
         for i in range(9):
             for j in range(9):
                 number = grid[j][i]
@@ -84,7 +93,7 @@ class Board:
                         value = font.render(
                             str(number), True, self.filled_text)
                         screen.blit(value, (70*j+70, 70*i+60))
-
+                        
     def insertion(self):
         while True:
             for event in pygame.event.get():
@@ -144,11 +153,15 @@ class Board:
         if event.type == pygame.QUIT:
             running = False
         if event.type == pygame.MOUSEBUTTONUP and event.button == 1:
+            i = pygame.mouse.get_pos()[0]
+            if i >= 680:
+                return True
             value = self.insertion()
             self.displayGameNumber()
             pygame.display.update()
         return False
-    def displayScore(self):
+    def displayScore(self,grid):
+        self.grid = grid
         text = font.render("SCORE",True,(255,255,255))
         rect = pygame.Rect((780, 250), (200, 200))
         pygame.draw.rect(screen, self.grid_background, rect)
@@ -169,12 +182,49 @@ class Board:
     def button(self):
         self.btn = pygame.Rect(
             (735, 500), (110, 50))
-        pygame.draw.rect(screen, (234, 229, 9), self.btn, border_radius=15)
+        pygame.draw.rect(screen, (234, 229, 9), self.btn, border_radius=10)
         font = pygame.font.SysFont('Agency FB', 25)
         text_surf = font.render("Restart", True, (0, 0, 0))
         text_center = text_surf.get_rect(center=self.btn.center)
         screen.blit(text_surf, (text_center[0], text_center[1]-2))
+        self.buttonClick()
+    def buttonClick(self):
+        mouse_pos = pygame.mouse.get_pos()
+        if self.btn.collidepoint(mouse_pos):
+            if pygame.mouse.get_pressed()[0]:
+                return self.buttonAction()
+        return [grid,False]
+    def buttonAction(self):
+        self.__init__()
+        NewGame = WindowLayer()
+        return True
 
+
+class WindowLayer:
+    def __init__(self):
+        self.widow_size = (920,720)
+        self.background_color = (101,33,255)
+        screen.fill(self.background_color)
+        logo = pygame.image.load("logo.png")
+        loadingFont = pygame.font.SysFont('Agency FB',20)
+        loading = loadingFont.render("Loading ...",True,(255,255,255))
+        screen.blit(logo, (400, 200))
+        screen.blit(loading,(445,350))
+        pygame.display.update()
+        self.loadNewGame()
+    
+    def loadNewGame(self):
+        global grid
+        global grid_original
+        grid = requests.get(
+            "https://sugoku.herokuapp.com/board?difficulty=hard")
+        grid = grid.json()['board']
+        grid_original = [[grid[x][y] for y in range(9)] for x in range(9)]
+        screen.fill(play.grid_background)
+        play.displayGameNumber()
+
+
+        
 
 
 def quitGame():
@@ -185,8 +235,9 @@ def quitGame():
     return True
 
 
-# getting sudoku game info from api
+# getting sudoku game info from api4
 response = requests.get("https://sugoku.herokuapp.com/board?difficulty=hard")
+global grid
 grid = response.json()['board']
 grid_original = []
 grid_original = [[grid[x][y] for y in range(9)] for x in range(9)]
@@ -208,10 +259,8 @@ pygame.display.set_icon(icon)
 # font and color
 global font
 font = pygame.font.SysFont('Agency FB', 30)
-
+start = StartWindow(screen)
 play = Board()
-
-start = StartWindow(screen, play.grid_background)
 
 
 global running
@@ -223,9 +272,7 @@ while running:
         if event.type == pygame.QUIT:
             running = False
         play.temp_displayIndex(event)
-        play.displayScore()
+        play.displayScore(grid)
         play.sudokuGrid()
-        # start.display()
         pygame.display.update()
         clock.tick(60)
-
