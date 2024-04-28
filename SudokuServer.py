@@ -3,6 +3,7 @@ import os
 import sys
 from _thread import *
 import pickle
+import Components
 
 server = ""
 port = 5555

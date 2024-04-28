@@ -18,13 +18,15 @@ class Network:
             return self.boradObj
         except Exception as err:
             print(err)
-        return None
+        return False
     
     def send(self, data):
         try:
             self.client.send(pickle.dumps(data))
-            return pickle.loads(self.client.recv(4096))
+            obj = pickle.loads(self.client.recv(4096))
+            return obj.status
         except Exception as err:
             print(err)
+        return False
         
     
