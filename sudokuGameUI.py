@@ -12,6 +12,8 @@ clientNumber = 0
 Gen = sudokuGen.SudoGrid()
 grid = Gen.getGrid()
 
+
+"""
 def main():
     run = True
     win.fill(COLOR_PURPLE)
@@ -31,3 +33,8 @@ def main():
                 g.key_event(event)
         pygame.display.update()
 main()
+"""
+
+Menu = Components.Menu(win)
+
+Menu.main()
