@@ -4,7 +4,7 @@ import numpy as np
 
 class SudoGrid:
     def __init__(self) -> None:
-        self.puzzle_string = np.array(list(str(generators.random_sudoku())))
+        self.puzzle_string = np.array(list(str(generators.random_sudoku(100))))
         vector_function = np.vectorize(int)
         self.puzzle_string = vector_function(self.puzzle_string)
         self.np_grid = self.puzzle_string.reshape(9,9)
@@ -16,25 +16,29 @@ class SudoGrid:
 
 
 def checkGameStatus(grid:list[list[int]], i:int, j:int)->bool:
-    val = grid[i][j]
-    for idx in range(9):
-        if idx == j:
-            continue
-        if grid[i][idx] == val:
-            return False
-    for idx in range(9):
-        if idx == i:
-            continue
-        if grid[idx][j] == val:
-            return False
-    x = i // 3
-    y = j // 3
-    for idx in range(3):
-        for idy in range(3):
-            if (x + idx) == i and (y + idy) == j:
-                continue
-            if grid[x+idx][y+idy] == val:
+    num = grid[i][j]
+    grid[i][j] = 0
+    row = i
+    col = j
+    board = grid
+    if num == " " or num == 0 :
+        return False
+    # Check row
+    if num in board[row]:
+        return False
+
+    # Check column
+    if num in [board[i][col] for i in range(9)]:
+        return False
+
+    # Check 3x3 box
+    start_row, start_col = 3 * (row // 3), 3 * (col // 3)
+    for i in range(start_row, start_row + 3):
+        for j in range(start_col, start_col + 3):
+            if board[i][j] == num:
+                grid[row][col] = num
                 return False
+    grid[row][col] = num
     return True
 
     
