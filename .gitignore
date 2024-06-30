@@ -1,5 +1,5 @@
-*/__pycache__/*
+**/__pycache__/**.pyc
 **/venv
 **/build
 **/dist
-__pycache__/** */.pyc
+__pycache__/TkComponents.cpython-312.pyc
