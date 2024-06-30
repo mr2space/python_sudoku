@@ -1,5 +1,6 @@
 import customtkinter as ck
 from PIL import Image
+from constants import Color
 import TkComponents as App
 import sys
 import os
