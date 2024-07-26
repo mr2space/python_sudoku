@@ -1,4 +1,5 @@
 import threading
+from network.Common import runAndClose
 from Components.Buttons import *
 from Components.Constants import *
 from Components.Labels import *
@@ -47,6 +48,12 @@ class GameMode(ABC):
         del label
         return None
     
+    def close_game(self):
+        pygame.display.quit();
+        pygame.quit()
+        self.thread_event.set()
+        runAndClose('Main.py')
+        
     @abstractmethod
     def main(self):
         ...
@@ -54,7 +61,6 @@ class GameMode(ABC):
 class OfflineGameMode(GameMode):
     def __init__(self, win:pygame.Surface) -> None:
         self.grid = sudokuGen.SudoGrid().getGrid()
-        print(win)
         self.win = win
     
     def main(self):
@@ -71,14 +77,14 @@ class OfflineGameMode(GameMode):
             self.quit.draw(self.win)
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
-                    run = False
-                    pygame.quit()
+                    self.thread_event.set()
+                    self.close_game()
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     pos = pygame.mouse.get_pos()
                     g.click(pos)
                     if self.quit.click(pos):
                         self.thread_event.set()
-                        return None
+                        self.close_game()
                 if event.type == pygame.KEYDOWN:
                     g.key_event(event)
                 if self.check_win_status():
@@ -106,8 +112,7 @@ class OnlineGameMode(GameMode):
                 return None
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
-                    run = False
-                    pygame.quit()
+                    self.close_game()
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     pos = pygame.mouse.get_pos()
                     g.click(pos)
@@ -117,7 +122,12 @@ class OnlineGameMode(GameMode):
                     self.win_panel()
                     return None
             pygame.display.update()
-          
+
+
+
+
+
+      
 class Menu:
     def __init__(self, win:pygame.Surface) -> None:
         self.pos:tuple[int, int] = (5,7)
@@ -158,7 +168,9 @@ class Menu:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     run = False
+                    pygame.display.quit();
                     pygame.quit()
+                    
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     pos = pygame.mouse.get_pos()
                     self.click(pos)

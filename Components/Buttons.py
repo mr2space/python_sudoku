@@ -4,8 +4,8 @@ import sys
 import time
 import copy
 import pygame
-import sudokuGen
-import network
+import UI.sudokuGen as sudokuGen
+import network.network as network
 import threading
 from math import floor
 

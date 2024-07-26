@@ -1,7 +1,7 @@
 import customtkinter as ck
 from PIL import Image
-from constants import Color
-import TkComponents as App
+from UI.constants import Color
+import UI.TkComponents as App
 import sys
 import os
 
@@ -21,7 +21,6 @@ app = ck.CTk();
 app.geometry(f"{WIN_WIDTH}x{WIN_HEIGHT}")
 app.title("Sudoku Game")
 
-
-
 Home = App.Screen(app, (WIN_WIDTH, WIN_HEIGHT))
 Home.startLoop()
+sys.exit()

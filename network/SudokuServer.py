@@ -4,8 +4,8 @@ import os
 import sys
 from _thread import *
 import pickle
-from GameMode import OnlineGameMode
-import sudokuGen
+from UI.GameMode import OnlineGameMode
+import UI.sudokuGen as sudokuGen
 
 server = ""
 port = 5555

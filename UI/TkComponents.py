@@ -1,5 +1,6 @@
 import customtkinter as ck
-from constants import Color
+from UI.constants import Color
+from network.Common import runAndClose
 from PIL import Image
 import sys
 import os
@@ -36,8 +37,9 @@ class Screen():
     
     
     def __offline_start(self,frame):
-        button = ck.CTkButton(frame,width=170,height=40,text="Start Offline",bg_color=self.Color.screen_bg,fg_color=self.Color.white_bg, hover=self.Color.white_bg, text_color=self.Color.primary,font=("Arial",16))
+        button = ck.CTkButton(frame,width=170,height=40,text="Start Offline",bg_color=self.Color.screen_bg,fg_color=self.Color.white_bg, hover=self.Color.white_bg, text_color=self.Color.primary,font=("Arial",16), command=runAndClose)
         button.grid(row=0,column=1)
+        
         
     def __online_start(self,frame):
         button = ck.CTkButton(frame,width=170,height=40,  text="Start Online",

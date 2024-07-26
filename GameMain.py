@@ -1,8 +1,8 @@
 import os
 import sys
 import pygame
-import GameMode
-import sudokuGen
+import UI.GameMode as GameMode
+import UI.sudokuGen as sudokuGen
 
 COLOR_PURPLE:tuple[int, int, int] = (101, 33, 255)
 WIN_WIDTH:int = 800
@@ -27,9 +27,11 @@ clientNumber = 0
 Gen = sudokuGen.SudoGrid()
 grid = Gen.getGrid()
 
-Menu = GameMode.Menu(win)
+Menu = GameMode.OfflineGameMode(win)
 try:
     Menu.main()
+    pygame.display.quit()
+    pygame.quit()
 except:
-    pass
+    sys.exit(0)
 

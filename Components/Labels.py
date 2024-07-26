@@ -1,5 +1,6 @@
 from .Constants import *
 from .Buttons import *
+import pygame
 
 class Label:
     def __init__(self, win, pos:tuple[int, int], color:tuple[int, int, int], name: str, event = None):
@@ -27,8 +28,8 @@ class Time(Label):
     
     def show_time(self):
         self.draw('A')
-        print("time")
         while self.event and (not self.event.is_set()):
+            
             self.draw(f'{self.time[0]}:{self.time[1]}')
             self.setTime()
             
