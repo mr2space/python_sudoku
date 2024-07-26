@@ -1,3 +1,4 @@
+from time import sleep
 import customtkinter as ck
 from UI.constants import Color
 from network.Common import runAndClose
@@ -16,8 +17,11 @@ class TextScreen():
         
         
     def set_text(self):
-        self.textlabel = ck.CTkButton(master=self.app, height=50, width=150, text=self.text, font=("Arial", 90), bg_color=self.Color.screen_bg,fg_color=self.Color.screen_bg, hover_color=self.Color.screen_bg, corner_radius=25)
+        self.textlabel = ck.CTkButton(master=self.app, height=50, width=150, text=self.text, font=("Arial", 16), bg_color=self.Color.screen_bg,fg_color=self.Color.screen_bg, hover_color=self.Color.screen_bg, corner_radius=25)
         self.textlabel.grid(row=self.pos[0],column=self.pos[1])
+    
+    def forgot_text(self):
+        self.textlabel.grid_forget();
 
 class Screen():
     img_path = r"imgs\bg_min_.png"
@@ -40,10 +44,13 @@ class Screen():
         button = ck.CTkButton(frame,width=170,height=40,text="Start Offline",bg_color=self.Color.screen_bg,fg_color=self.Color.white_bg, hover=self.Color.white_bg, text_color=self.Color.primary,font=("Arial",16), command=runAndClose)
         button.grid(row=0,column=1)
         
-        
+    def __onclick_online(self):
+        text = TextScreen("Server is not Ready!", self.app, 3, 0, 1);
+        self.app.after(2000, text.forgot_text);
+    
     def __online_start(self,frame):
         button = ck.CTkButton(frame,width=170,height=40,  text="Start Online",
-                              bg_color=self.Color.screen_bg,fg_color=self.Color.primary, hover=self.Color.primary, text_color=self.Color.white_bg,font=("Arial",16))
+                              bg_color=self.Color.screen_bg,fg_color=self.Color.primary, hover=self.Color.primary, text_color=self.Color.white_bg,font=("Arial",16), command=self.__onclick_online)
         button.grid(row=1,column=1)
     
     def __display_content(self):
@@ -55,6 +62,7 @@ class Screen():
         frame.grid(row=1, sticky="nwes")
         self.__offline_start(frame)
         self.__online_start(frame)
+
     
     def __set_image(self,app,path):
         img_path = self.resource_path(path)
